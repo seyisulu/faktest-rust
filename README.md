@@ -1,17 +1,19 @@
-# FakTest Modern Stack
+# FakTest - Modernized Stack
 
-**Modern implementation of FakTest online examination platform**
+**Modern replacement for the legacy Yii 1 FakTest examination platform**
 
-This repo is the complete migration from legacy **Yii 1 (PHP)** to a modern **React + Rust (Axum) + PostgreSQL** stack, following the MASC_Updated.md design document.
+## Tech Stack
+- **Backend**: Rust (Axum) + SQLx + PostgreSQL
+- **Frontend**: React + TypeScript + Vite (Student + Admin portals)
+- **Database**: PostgreSQL with denormalized `test_attempts` (JSONB)
+- **Auth**: Argon2id + JWT (Access + Refresh tokens)
 
-## Project Status
-- ✅ Rust backend scaffold with full structure
-- ✅ Argon2 authentication
-- ✅ Denormalized `test_attempts` models + scoring engine
-- ✅ Student and Admin React frontends (Vite + TS)
-- ✅ Docker + docker-compose support
+## Quick Start - Run Locally
 
-## Local Development Setup
+### Prerequisites
+- Docker & Docker Compose (recommended)
+- Node.js 20+ and npm (for frontend development)
+- Rust toolchain (for backend development)
 
 ### 1. Clone the repository
 ```bash
@@ -19,69 +21,58 @@ git clone https://github.com/seyisulu/faktest-rust.git
 cd faktest-rust
 ```
 
-### 2. Backend (Rust)
+### 2. Environment Setup
+```bash
+cp .env.example .env
+# Edit .env and set:
+# - DATABASE_URL
+# - JWT_SECRET (strong random string)
+```
 
-1. Copy environment variables:
-   ```bash
-   cp .env.example .env
-   ```
-   Edit `.env` and set:
-   - `DATABASE_URL=postgres://faktest:password@localhost:5432/faktest`
-   - `JWT_SECRET=your-super-secret-jwt-key-here`
+### 3. Run with Docker Compose (Recommended - Backend + DB)
+```bash
+docker compose up --build
+```
 
-2. Start the full stack with Docker (recommended):
-   ```bash
-   docker compose up --build
-   ```
-   Backend will be available at `http://localhost:3000`
+Backend will be available at: **http://localhost:3000**
 
-3. Or run backend natively (requires Rust and Postgres running):
-   ```bash
-   cargo run
-   ```
+### 4. Run Frontends
+In separate terminals:
 
-### 3. Frontend
-
-#### Student Portal
+**Student Portal**
 ```bash
 cd frontend-student
 npm install
 npm run dev
 ```
-→ Opens at `http://localhost:5173`
+→ Opens at http://localhost:5173
 
-#### Admin Dashboard
+**Admin Dashboard**
 ```bash
 cd frontend-admin
 npm install
 npm run dev
 ```
-→ Opens at `http://localhost:5174`
+→ Opens at http://localhost:5174
 
-### 4. Database
-The `docker-compose.yml` includes PostgreSQL. After starting, you can run migrations (once implemented):
+### Alternative: Backend without Docker
 ```bash
-cd faktest-rust/backend  # or wherever migrations are
-cargo sqlx migrate run
+# Start PostgreSQL separately (or use local instance)
+cargo run
 ```
 
+## Project Structure
+- `faktest-backend/` - Rust Axum backend (main application)
+- `frontend-student/` - Student test-taking interface
+- `frontend-admin/` - Administration dashboard
+- `MASC_Updated.md` - Complete migration handoff document
+
 ## API Documentation
-Once backend is running, visit `http://localhost:3000/swagger-ui` for OpenAPI docs.
-
-## Tech Stack
-- **Backend**: Rust, Axum, SQLx, Argon2, JWT
-- **Frontend**: React, TypeScript, Vite, Tailwind
-- **Database**: PostgreSQL with JSONB
-- **Auth**: Argon2 + JWT (access + refresh tokens)
-
-See `MASC_Updated.md` for complete architecture, schema, and migration strategy.
+Once backend is running, visit `/swagger-ui` for OpenAPI/Swagger docs.
 
 ## Next Steps
-- Database migrations
-- Full end-to-end test flow
-- CI/CD pipeline
-- Data migration from legacy MySQL
+See `MASC_Updated.md` for full migration plan and Section 8 priorities.
 
----
+**Legacy Yii 1 application is being replaced via Strangler Fig pattern.**
 
-**Legacy FakTest** is being replaced via **Strangler Fig** pattern. This is the new canonical implementation.
+Built as part of the FakTest modernization project.
