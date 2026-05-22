@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS test_attempts;
+DROP TABLE IF EXISTS tests;
+DROP TABLE IF EXISTS users;

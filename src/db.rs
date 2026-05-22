@@ -1,6 +1,10 @@
-use sqlx::postgres::PgPool;
-use crate::config::Config;
+use sqlx::PgPool;
 
-pub async fn create_pool(config: &Config) -> PgPool {
-    PgPool::connect(&config.database_url).await.expect("Failed to create DB pool")
+pub async fn get_db_pool() -> PgPool {
+    // implementation stub
+    PgPool::connect(&std::env::var("DATABASE_URL").unwrap()).await.unwrap()
+}
+
+pub async fn run_migrations(pool: &PgPool) {
+    sqlx::migrate!().run(pool).await.expect("Failed to run migrations");
 }
